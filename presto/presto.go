@@ -834,7 +834,7 @@ func (c *typeConverter) ConvertValue(v interface{}) (driver.Value, error) {
 			return nil, err
 		}
 		return vv.Bool, err
-	case "json", "char", "varchar", "varbinary", "interval year to month", "interval day to second", "decimal", "ipaddress", "unknown":
+	case "json", "char", "varchar", "varbinary", "interval year to month", "interval day to second", "decimal", "ipaddress", "unknown", "ObjectId":
 		vv, err := scanNullString(v)
 		if !vv.Valid {
 			return nil, err
@@ -868,6 +868,9 @@ func (c *typeConverter) ConvertValue(v interface{}) (driver.Value, error) {
 			return nil, err
 		}
 		return v, nil
+	case "row":
+		b, _ := json.Marshal(v)
+		return string(b), nil
 	default:
 		return nil, fmt.Errorf("type not supported: %q", c.typeName)
 	}
